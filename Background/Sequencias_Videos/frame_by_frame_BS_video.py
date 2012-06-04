@@ -8,13 +8,12 @@ filtro_de_erosao = 2
 resolucao_largura = 640
 resolucao_altura = 480
 
-video = cv.CaptureFromFile('levantar_bracos.avi')
+video = cv.CaptureFromFile('andar_direita.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 
 cv.NamedWindow("Video", 1)
-
-cv.NamedWindow("Mascara", 0)
-cv.NamedWindow("Binario", 0)
+cv.NamedWindow("Mascara", 1)
+cv.NamedWindow("Binario", 1)
 cv.NamedWindow("Regiao de Interesse", 1)
 cv.MoveWindow("Regiao de Interesse",650,20)
 cv.MoveWindow("Mascara",650,510)
@@ -27,8 +26,8 @@ cv.Smooth(fundo,fundo,cv.CV_GAUSSIAN,filtro_de_gauss)
 
 class Filtros:
 	def __init__(self):
-		frame = 293
-		self.tolerancia = 35
+		frame = 211
+		self.tolerancia = 33
 		cv.CreateTrackbar("Frames", "Video", frame, frames_total-1, self.atualiza_frame)
 		cv.CreateTrackbar("Tolerancia", "Video", self.tolerancia, 255, self.atualiza_tolerancia)
 		self.atualiza_frame(frame)
@@ -119,3 +118,4 @@ if __name__ == "__main__":
 	Filtros()
 	cv.WaitKey(0)
 	print("Elisson Michael : [UENF] ")
+

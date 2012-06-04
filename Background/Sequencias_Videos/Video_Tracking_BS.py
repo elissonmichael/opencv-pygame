@@ -1,9 +1,9 @@
 import cv
-import os
+from os import system
 
 #Configuracoes :
 filtro_de_gauss = 3
-tolerancia = 25
+tolerancia = 35
 filtro_de_dilatacao = 4
 filtro_de_erosao = 2
 resolucao_largura = 640
@@ -48,7 +48,7 @@ for f in xrange( frames_total ):
 
     armazenamento = cv.CreateMemStorage(0)
     contorno = cv.FindContours(cinza, armazenamento, cv.CV_RETR_LIST, cv.CV_LINK_RUNS)
-    
+
     while contorno:
         vertices_do_retangulo = cv.BoundingRect(list(contorno))
 	listaVertices.append(vertices_do_retangulo)
@@ -92,7 +92,7 @@ for f in xrange( frames_total ):
     #os.system("clear")
     #print porcentagem
     #print pixelsbrancos
-    
+
     cv.ShowImage("Mascara", mascara)
     cv.ShowImage("Binario", cinza)
     cv.ShowImage("Webcam", imagem)
