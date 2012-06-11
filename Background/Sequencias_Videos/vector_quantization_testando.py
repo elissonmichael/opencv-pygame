@@ -11,7 +11,7 @@ filtro_de_erosao = 2
 resolucao_largura = 640
 resolucao_altura = 480
 
-video = cv.CaptureFromFile('andar_direita.avi')
+video = cv.CaptureFromFile('andar_esquerda.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 
 cv.NamedWindow("Video", 1)
@@ -101,17 +101,17 @@ class Filtros:
 		print 'Vetor de features : '
 		print porcentagem#vetor_de_caracteristicas[0]
 		print 'Indice do codeword : ',
+		print resultado[0]
+		#if resultado[0]==0: print 'Virado para Direita -> '
+		#if resultado[0]==1: print 'Passo Direita 1 -> '
+		#if resultado[0]==2: print 'Passo Direita 2 -> '
+		#if resultado[0]==3: print '<- Virado para Esquerda '
+		#if resultado[0]==4: print '<- Passo Esquerda 1 '
+		#if resultado[0]==5: print '<- Passo Esquerda 2 '
+		#if resultado[0]==6: print ' - Parado de Frente - '
 
-		if resultado[0]==0: print 'Virado para Direita -> '
-		if resultado[0]==1: print 'Passo Direita 1 -> '
-		if resultado[0]==2: print 'Passo Direita 2 -> '
-		if resultado[0]==3: print '<- Virado para Esquerda '
-		if resultado[0]==4: print '<- Passo Esquerda 1 '
-		if resultado[0]==5: print '<- Passo Esquerda 2 '
-		if resultado[0]==6: print ' - Parado de Frente - '
-
-		print 'Distorcao : ',
-		print resultado[1]
+		#print 'Distorcao : ',
+		#print resultado[1]
 		self.mostrar()
 
 	def atualiza_tolerancia(self,tolerancia):

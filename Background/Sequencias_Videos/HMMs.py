@@ -3,10 +3,10 @@ from ghmm import *
 
 sigma = IntegerRange(0,7)
 pi = [0.33,0.33,0.33]
-A = [[0.5,0.5,0.5],[0.5,0.5,0.5],[0.5,0.5,0.5]]
-virado_direita = [0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285]
-passo_direita_1 = [0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285]
-passo_direita_2 = [0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285, 0.14285714285714285]
+A = [[0.50,0.50,0.50],[0.50,0.50,0.50],[0.50,0.50,0.50]]
+virado_direita = [0.70, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
+passo_direita_1 = [0.70, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
+passo_direita_2 = [0.70, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
 B = [virado_direita,passo_direita_1,passo_direita_2]
 
 HMM_passo_para_direita = HMMFromMatrices (sigma, DiscreteDistribution(sigma), A, B, pi)
@@ -20,8 +20,15 @@ for i in range(len(observacao_video_vetor)):
 
 sequencia_treino_direita = EmissionSequence(sigma,observacao_video_vetor)
 
-HMM_passo_para_direita.baumWelch(sequencia_treino_direita)
+#HMM_passo_para_direita.baumWelch(sequencia_treino_direita)
 
 print HMM_passo_para_direita
+
+sequencia_a_ser_avaliada = EmissionSequence(sigma,observacao_video_vetor)
+print 'Sequencia de Entrada na HMM -> ',
+print sequencia_a_ser_avaliada
+viterbi = HMM_passo_para_direita.viterbi(sequencia_a_ser_avaliada)
+print 'Sequencia de Estados Visitados na HMM :'
+print viterbi
 #print observacao_video_vetor
 
