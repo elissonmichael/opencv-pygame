@@ -2,6 +2,7 @@ import cv
 from os import system
 
 #Configuracoes :
+divisoes_para_vetor_de_caracteristicas = 5
 filtro_de_gauss = 3
 filtro_de_dilatacao = 4
 filtro_de_erosao = 2
@@ -27,7 +28,7 @@ cv.Smooth(fundo,fundo,cv.CV_GAUSSIAN,filtro_de_gauss)
 class Filtros:
 	def __init__(self):
 		frame = 211
-		self.tolerancia = 33
+		self.tolerancia = 35
 		cv.CreateTrackbar("Frames", "Video", frame, frames_total-1, self.atualiza_frame)
 		cv.CreateTrackbar("Tolerancia", "Video", self.tolerancia, 255, self.atualiza_tolerancia)
 		self.atualiza_frame(frame)
@@ -78,13 +79,13 @@ class Filtros:
 			cv.Line(mascara,(ponto1[0],ponto1[1]+altura/3),(ponto2[0],ponto1[1]+altura/3), cv.CV_RGB(255,255,255), 1)
 			cv.Line(mascara,(ponto1[0],ponto1[1]+altura/3+altura/3),(ponto2[0],ponto1[1]+altura/3+altura/3), cv.CV_RGB(255,255,255), 1)
 
-		subparte_largura = regiao_de_interesse.width/3
-		subparte_altura = regiao_de_interesse.height/3
+		subparte_largura = regiao_de_interesse.width/divisoes_para_vetor_de_caracteristicas
+		subparte_altura = regiao_de_interesse.height/divisoes_para_vetor_de_caracteristicas
 		area_subparte = subparte_largura*subparte_altura
 
-		for i in range(0,3):
-			for j in range (0,3):
-				l = i*3
+		for i in range(0,divisoes_para_vetor_de_caracteristicas):
+			for j in range (0,divisoes_para_vetor_de_caracteristicas):
+				l = i*divisoes_para_vetor_de_caracteristicas
 				retangulo = (subparte_largura*i,subparte_altura*j,subparte_largura,subparte_altura)
 				cv.SetImageROI(regiao_de_interesse,retangulo)
 				quadrante.append(cv.CreateImage((subparte_largura,subparte_altura), regiao_de_interesse.depth, regiao_de_interesse.channels))
@@ -116,6 +117,9 @@ class Filtros:
 
 if __name__ == "__main__":
 	Filtros()
-	cv.WaitKey(0)
+	while True:
+		tecla_apertada = cv.WaitKey(7) % 0x100
+		if tecla_apertada == 27:
+			break
 	print("Elisson Michael : [UENF] ")
 
