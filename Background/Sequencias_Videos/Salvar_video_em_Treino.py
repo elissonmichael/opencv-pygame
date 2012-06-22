@@ -5,6 +5,7 @@ from os import system
 from Vector_Quantization import code_book
 
 #Configuracoes :
+divisoes_para_vetor_de_caracteristicas = 5
 filtro_de_gauss = 3
 tolerancia = 35
 filtro_de_dilatacao = 4
@@ -18,11 +19,11 @@ fps = cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FPS )
 waitPerFrameInMillisec = int( 1/fps * 1000/1 )
 
 cv.NamedWindow("Webcam", 1)
-cv.NamedWindow("Mascara", 0)
+#cv.NamedWindow("Mascara", 0)
 cv.NamedWindow("Binario", 0)
-cv.NamedWindow("Regiao de Interesse", 1)
-cv.MoveWindow("Regiao de Interesse",1000,480)
-cv.MoveWindow("Mascara",0,500)
+#cv.NamedWindow("Regiao de Interesse", 1)
+#cv.MoveWindow("Regiao de Interesse",1000,480)
+#cv.MoveWindow("Mascara",0,500)
 cv.MoveWindow("Binario",400,500)
 
 arquivo = open ('Treino.txt','a')
@@ -80,29 +81,29 @@ for f in xrange( frames_total ):
 	cv.Line(mascara,(ponto1[0],ponto1[1]+altura/3),(ponto2[0],ponto1[1]+altura/3), cv.CV_RGB(255,255,255), 1)
 	cv.Line(mascara,(ponto1[0],ponto1[1]+altura/3+altura/3),(ponto2[0],ponto1[1]+altura/3+altura/3), cv.CV_RGB(255,255,255), 1)
 
-    subparte_largura = regiao_de_interesse.width/3
-    subparte_altura = regiao_de_interesse.height/3
-    area_subparte = subparte_largura*subparte_altura
-    for i in range(0,3):
-	for j in range (0,3):
-		l = i*3
-		retangulo = (subparte_largura*i,subparte_altura*j,subparte_largura,subparte_altura)
-		cv.SetImageROI(regiao_de_interesse,retangulo)
-		quadrante.append(cv.CreateImage((subparte_largura,subparte_altura), regiao_de_interesse.depth, regiao_de_interesse.channels))
-		pixelsbrancos.append(cv.CountNonZero(regiao_de_interesse))
-		porcentagem.append(float(pixelsbrancos[l+j])/float(area_subparte))
-		cv.Copy(regiao_de_interesse,quadrante[l+j])
-		cv.ResetImageROI(regiao_de_interesse)
+	subparte_largura = regiao_de_interesse.width/divisoes_para_vetor_de_caracteristicas
+	subparte_altura = regiao_de_interesse.height/divisoes_para_vetor_de_caracteristicas
+	area_subparte = subparte_largura*subparte_altura
 
-    #system("clear")
+	for i in range(0,divisoes_para_vetor_de_caracteristicas):
+		for j in range (0,divisoes_para_vetor_de_caracteristicas):
+			l = i*divisoes_para_vetor_de_caracteristicas
+			retangulo = (subparte_largura*i,subparte_altura*j,subparte_largura,subparte_altura)
+			cv.SetImageROI(regiao_de_interesse,retangulo)
+			quadrante.append(cv.CreateImage((subparte_largura,subparte_altura), regiao_de_interesse.depth, regiao_de_interesse.channels))
+			pixelsbrancos.append(cv.CountNonZero(regiao_de_interesse))
+			porcentagem.append(float(pixelsbrancos[l+j])/float(area_subparte))
+			cv.Copy(regiao_de_interesse,quadrante[l+j])
+			cv.ResetImageROI(regiao_de_interesse)
+
     vetor_de_caracteristicas = array ([porcentagem])
     resultado = vq(vetor_de_caracteristicas,code_book)
 
 
-    cv.ShowImage("Mascara", mascara)
+    #cv.ShowImage("Mascara", mascara)
     cv.ShowImage("Binario", cinza)
-    cv.ShowImage("Webcam", imagem)
-    cv.ShowImage('Regiao de Interesse',regiao_de_interesse)
+    #cv.ShowImage("Webcam", imagem)
+    #cv.ShowImage('Regiao de Interesse',regiao_de_interesse)
 
     simbolo = str(resultado[0][0])
     arquivo.write(simbolo)

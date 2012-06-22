@@ -3,7 +3,7 @@ from os import system
 
 #Configuracoes :
 filtro_de_gauss = 3
-tolerancia = 35
+tolerancia = 30
 filtro_de_dilatacao = 4
 filtro_de_erosao = 2
 resolucao_largura = 640

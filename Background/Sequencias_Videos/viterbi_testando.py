@@ -7,6 +7,7 @@ from Vector_Quantization import code_book
 from HMMs import HMM_passo_para_direita,sigma
 
 #Configuracoes :
+divisoes_para_vetor_de_caracteristicas = 5
 filtro_de_gauss = 3
 filtro_de_dilatacao = 4
 filtro_de_erosao = 2
@@ -17,11 +18,11 @@ video = cv.CaptureFromFile('andar_direita.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 
 cv.NamedWindow("Video", 1)
-cv.NamedWindow("Mascara", 1)
+#cv.NamedWindow("Mascara", 1)
 cv.NamedWindow("Binario", 1)
-cv.NamedWindow("Regiao de Interesse", 1)
-cv.MoveWindow("Regiao de Interesse",650,20)
-cv.MoveWindow("Mascara",650,510)
+#cv.NamedWindow("Regiao de Interesse", 1)
+#cv.MoveWindow("Regiao de Interesse",650,20)
+#cv.MoveWindow("Mascara",650,510)
 cv.MoveWindow("Binario",1000,510)
 
 mascara = cv.CreateImage((resolucao_largura,resolucao_altura), 8, 3)
@@ -77,19 +78,19 @@ class Filtros:
 
 			largura = ponto2[0] - ponto1[0]
 			altura = ponto2[1] - ponto1[1]
-			cv.Rectangle(mascara, ponto1, ponto2, cv.CV_RGB(255,255,255), 2)
-			cv.Line(mascara,(ponto1[0]+largura/3,ponto1[1]),(ponto1[0]+largura/3,ponto2[1]), cv.CV_RGB(255,255,255), 1)
-			cv.Line(mascara,(ponto1[0]+largura/3+largura/3,ponto1[1]),(ponto1[0]+largura/3+largura/3 ,ponto2[1]), cv.CV_RGB(255,255,255), 1)
-			cv.Line(mascara,(ponto1[0],ponto1[1]+altura/3),(ponto2[0],ponto1[1]+altura/3), cv.CV_RGB(255,255,255), 1)
-			cv.Line(mascara,(ponto1[0],ponto1[1]+altura/3+altura/3),(ponto2[0],ponto1[1]+altura/3+altura/3), cv.CV_RGB(255,255,255), 1)
+			cv.Rectangle(self.imagem, ponto1, ponto2, cv.CV_RGB(255,255,255), 2)
+			#cv.Line(mascara,(ponto1[0]+largura/3,ponto1[1]),(ponto1[0]+largura/3,ponto2[1]), cv.CV_RGB(255,255,255), 1)
+			#cv.Line(mascara,(ponto1[0]+largura/3+largura/3,ponto1[1]),(ponto1[0]+largura/3+largura/3 ,ponto2[1]), cv.CV_RGB(255,255,255), 1)
+			#cv.Line(mascara,(ponto1[0],ponto1[1]+altura/3),(ponto2[0],ponto1[1]+altura/3), cv.CV_RGB(255,255,255), 1)
+			#cv.Line(mascara,(ponto1[0],ponto1[1]+altura/3+altura/3),(ponto2[0],ponto1[1]+altura/3+altura/3), cv.CV_RGB(255,255,255), 1)
 
-		subparte_largura = regiao_de_interesse.width/3
-		subparte_altura = regiao_de_interesse.height/3
+		subparte_largura = regiao_de_interesse.width/divisoes_para_vetor_de_caracteristicas
+		subparte_altura = regiao_de_interesse.height/divisoes_para_vetor_de_caracteristicas
 		area_subparte = subparte_largura*subparte_altura
 
-		for i in range(0,3):
-			for j in range (0,3):
-				l = i*3
+		for i in range(0,divisoes_para_vetor_de_caracteristicas):
+			for j in range (0,divisoes_para_vetor_de_caracteristicas):
+				l = i*divisoes_para_vetor_de_caracteristicas
 				retangulo = (subparte_largura*i,subparte_altura*j,subparte_largura,subparte_altura)
 				cv.SetImageROI(regiao_de_interesse,retangulo)
 				quadrante.append(cv.CreateImage((subparte_largura,subparte_altura), regiao_de_interesse.depth, regiao_de_interesse.channels))
@@ -100,8 +101,8 @@ class Filtros:
 		system("clear")
 		vetor_de_caracteristicas = array ([porcentagem])
 		resultado = vq(vetor_de_caracteristicas,code_book)
-		print 'Vetor de features : '
-		print porcentagem
+		#print 'Vetor de features : '
+		#print porcentagem
 		sequencia_a_ser_avaliada = EmissionSequence(sigma,[resultado[0][0]])
 		print sequencia_a_ser_avaliada
 		viterbi = HMM_passo_para_direita.viterbi(sequencia_a_ser_avaliada)
@@ -123,8 +124,8 @@ class Filtros:
 
 	def mostrar(self):
 		cv.ShowImage("Video",self.imagem)
-		cv.ShowImage('Regiao de Interesse',regiao_de_interesse)
-		cv.ShowImage("Mascara", mascara)
+		#cv.ShowImage('Regiao de Interesse',regiao_de_interesse)
+		#cv.ShowImage("Mascara", mascara)
 		cv.ShowImage("Binario", cinza)
 
 if __name__ == "__main__":
