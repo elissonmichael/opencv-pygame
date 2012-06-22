@@ -12,7 +12,7 @@ filtro_de_erosao = 2
 resolucao_largura = 640
 resolucao_altura = 480
 
-video = cv.CaptureFromFile('andar_esquerda.avi')
+video = cv.CaptureFromFile('andar_direita.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 
 cv.NamedWindow("Video", 1)
@@ -99,8 +99,8 @@ class Filtros:
 		system("clear")
 		vetor_de_caracteristicas = array ([porcentagem])
 		resultado = vq(vetor_de_caracteristicas,code_book)
-		#print 'Vetor de features : '
-		#print porcentagem#vetor_de_caracteristicas[0]
+		print 'Vetor de features : '
+		print porcentagem#vetor_de_caracteristicas[0]
 		print 'Indice do codeword : ',
 		print resultado[0]
 		self.mostrar()
