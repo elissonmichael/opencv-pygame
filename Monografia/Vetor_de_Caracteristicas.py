@@ -12,13 +12,15 @@ resolucao_altura = 480
 video = cv.CaptureFromFile('videos/passo_direita_1.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 
-cv.NamedWindow("Video", 1)
+cv.NamedWindow("Video", 0)
 cv.NamedWindow("Mascara", 1)
-cv.NamedWindow("Binario", 1)
+#cv.NamedWindow("Binario", 1)
+cv.MoveWindow("Video",1000,510)
+cv.MoveWindow("Mascara",0,0)
+#cv.MoveWindow("Binario",650,0)
+
 cv.NamedWindow("Regiao de Interesse", 1)
-cv.MoveWindow("Regiao de Interesse",650,20)
-cv.MoveWindow("Mascara",650,510)
-cv.MoveWindow("Binario",1000,510)
+cv.MoveWindow("Regiao de Interesse",650,0)
 
 mascara = cv.CreateImage((resolucao_largura,resolucao_altura), 8, 3)
 cinza = cv.CreateImage((resolucao_largura,resolucao_altura), 8, 1)
@@ -29,8 +31,8 @@ class Filtros:
 	def __init__(self):
 		frame = 0
 		self.tolerancia = 30
-		cv.CreateTrackbar("Frames", "Video", frame, frames_total-1, self.atualiza_frame)
-		cv.CreateTrackbar("Tolerancia", "Video", self.tolerancia, 255, self.atualiza_tolerancia)
+		cv.CreateTrackbar("Frames", "Mascara", frame, frames_total-1, self.atualiza_frame)
+		cv.CreateTrackbar("Tolerancia", "Mascara", self.tolerancia, 255, self.atualiza_tolerancia)
 		self.atualiza_frame(frame)
 
 	def processa(self):
@@ -114,7 +116,7 @@ class Filtros:
 		cv.ShowImage("Video",self.imagem)
 		cv.ShowImage('Regiao de Interesse',regiao_de_interesse)
 		cv.ShowImage("Mascara", mascara)
-		cv.ShowImage("Binario", cinza)
+		#cv.ShowImage("Binario", cinza)
 
 
 if __name__ == "__main__":
