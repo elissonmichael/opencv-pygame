@@ -12,7 +12,7 @@ filtro_de_erosao = 2
 resolucao_largura = 640
 resolucao_altura = 480
 
-video = cv.CaptureFromFile('videos/2_bracos_1.avi')
+video = cv.CaptureFromFile('videos/passo_direita_1.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 
 cv.NamedWindow("Video", 0)
@@ -78,7 +78,7 @@ class Filtros:
 
 			largura = ponto2[0] - ponto1[0]
 			altura = ponto2[1] - ponto1[1]
-			cv.Rectangle(mascara, ponto1, ponto2, cv.CV_RGB(255,255,255), 2)
+			cv.Rectangle(mascara, ponto1, ponto2, cv.CV_RGB(255,255,255), 1)
 
 			ponto_largura = largura/divisoes_para_vetor_de_caracteristicas
 			ponto_altura = altura/divisoes_para_vetor_de_caracteristicas
@@ -106,7 +106,10 @@ class Filtros:
 		resultado = vq(vetor_de_caracteristicas,code_book)
 
 		print 'Indice do codeword : ',
-		print resultado[0]
+		simbolos.append(resultado[0][0])
+		print simbolos
+		print 'Tamanho do vetor de simbolos -> ',
+		print len(simbolos)
 		self.mostrar()
 
 	def atualiza_tolerancia(self,tolerancia):
@@ -126,9 +129,13 @@ class Filtros:
 		#cv.ShowImage("Binario", cinza)
 
 if __name__ == "__main__":
+	simbolos = []
 	Filtros()
 	while True:
 		tecla_apertada = cv.WaitKey(7) % 0x100
+		if tecla_apertada == 32:
+			print ('O vetor de simbolos foi esvaziado !')
+			simbolos = []
 		if tecla_apertada == 27:
 			break
 	print("Elisson Michael : [UENF] ")
