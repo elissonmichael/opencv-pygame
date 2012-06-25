@@ -1,5 +1,8 @@
 import cv
+from numpy import array
+from scipy.cluster.vq import vq
 from os import system
+from Code_Book import code_book
 
 #Configuracoes :
 divisoes_para_vetor_de_caracteristicas = 6
@@ -9,7 +12,7 @@ filtro_de_erosao = 2
 resolucao_largura = 640
 resolucao_altura = 480
 
-video = cv.CaptureFromFile('videos/2_bracos_3.avi')
+video = cv.CaptureFromFile('videos/2_bracos_1.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 
 cv.NamedWindow("Video", 0)
@@ -75,7 +78,7 @@ class Filtros:
 
 			largura = ponto2[0] - ponto1[0]
 			altura = ponto2[1] - ponto1[1]
-			cv.Rectangle(mascara, ponto1, ponto2, cv.CV_RGB(255,255,255), 1)
+			cv.Rectangle(mascara, ponto1, ponto2, cv.CV_RGB(255,255,255), 2)
 
 			ponto_largura = largura/divisoes_para_vetor_de_caracteristicas
 			ponto_altura = altura/divisoes_para_vetor_de_caracteristicas
@@ -99,7 +102,11 @@ class Filtros:
 				cv.Copy(regiao_de_interesse,quadrante[l+j])
 				cv.ResetImageROI(regiao_de_interesse)
 		system("clear")
-		print porcentagem
+		vetor_de_caracteristicas = array ([porcentagem])
+		resultado = vq(vetor_de_caracteristicas,code_book)
+
+		print 'Indice do codeword : ',
+		print resultado[0]
 		self.mostrar()
 
 	def atualiza_tolerancia(self,tolerancia):
@@ -117,7 +124,6 @@ class Filtros:
 		cv.ShowImage('Regiao de Interesse',regiao_de_interesse)
 		cv.ShowImage("Mascara", mascara)
 		#cv.ShowImage("Binario", cinza)
-
 
 if __name__ == "__main__":
 	Filtros()
