@@ -15,19 +15,19 @@ filtro_de_erosao = 2
 resolucao_largura = 640
 resolucao_altura = 480
 
-video = cv.CaptureFromFile('videos/passo_direita_1.avi')
+video = cv.CaptureFromFile('videos/testar_todos.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 fps = cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FPS )
 waitPerFrameInMillisec = int( 1/fps * 1000/1 )
 
-#cv.NamedWindow("Video", 0)
-#cv.NamedWindow("Mascara", 1)
+cv.NamedWindow("Video", 0)
+cv.NamedWindow("Mascara", 1)
 #cv.NamedWindow("Binario", 1)
-#cv.MoveWindow("Video",1000,510)
-#cv.MoveWindow("Mascara",0,0)
+cv.MoveWindow("Video",1000,510)
+cv.MoveWindow("Mascara",0,0)
 #cv.MoveWindow("Binario",650,0)
-#cv.NamedWindow("Regiao de Interesse", 1)
-#cv.MoveWindow("Regiao de Interesse",650,0)
+cv.NamedWindow("Regiao de Interesse", 1)
+cv.MoveWindow("Regiao de Interesse",650,0)
 
 mascara = cv.CreateImage((resolucao_largura,resolucao_altura), 8, 3)
 cinza = cv.CreateImage((resolucao_largura,resolucao_altura), 8, 1)
@@ -38,6 +38,7 @@ simbolos = []
 probabilidades = []
 
 for f in xrange( frames_total ):
+    system('clear')
 
     imagem = cv.QueryFrame(video)
     cv.Smooth(imagem,imagem,cv.CV_GAUSSIAN,filtro_de_gauss)
@@ -98,33 +99,34 @@ for f in xrange( frames_total ):
 		cv.SetImageROI(regiao_de_interesse,retangulo)
 		quadrante.append(cv.CreateImage((subparte_largura,subparte_altura), regiao_de_interesse.depth, regiao_de_interesse.channels))
 		pixelsbrancos.append(cv.CountNonZero(regiao_de_interesse))
-		porcentagem.append(float(pixelsbrancos[l+j])/float(area_subparte))
+		if area_subparte:
+			porcentagem.append(float(pixelsbrancos[l+j])/float(area_subparte))
 		cv.Copy(regiao_de_interesse,quadrante[l+j])
 		cv.ResetImageROI(regiao_de_interesse)
 
-    system('clear')
-    vetor_de_caracteristicas = array ([porcentagem])
-    code_word = vq(vetor_de_caracteristicas,code_book)
-    if len(simbolos)==20:
-	probabilidades = []
-	sequencia_a_ser_avaliada = EmissionSequence(sigma,simbolos)
-	probabilidades.append(HMM_passo_para_direita.viterbi(sequencia_a_ser_avaliada)[1])
-	probabilidades.append(HMM_passo_para_esquerda.viterbi(sequencia_a_ser_avaliada)[1])
-	probabilidades.append(HMM_levantar_braco_direito.viterbi(sequencia_a_ser_avaliada)[1])
-	probabilidades.append(HMM_levantar_braco_esquerdo.viterbi(sequencia_a_ser_avaliada)[1])
-	probabilidades.append(HMM_levantar_ambos_os_bracos.viterbi(sequencia_a_ser_avaliada)[1])
+    if porcentagem:
+	vetor_de_caracteristicas = array ([porcentagem])
+	code_word = vq(vetor_de_caracteristicas,code_book)
+	if len(simbolos)==15:
+		probabilidades = []
+		sequencia_a_ser_avaliada = EmissionSequence(sigma,simbolos)
+		probabilidades.append(HMM_passo_para_direita.viterbi(sequencia_a_ser_avaliada)[1])
+		probabilidades.append(HMM_passo_para_esquerda.viterbi(sequencia_a_ser_avaliada)[1])
+		probabilidades.append(HMM_levantar_braco_direito.viterbi(sequencia_a_ser_avaliada)[1])
+		probabilidades.append(HMM_levantar_braco_esquerdo.viterbi(sequencia_a_ser_avaliada)[1])
+		probabilidades.append(HMM_levantar_ambos_os_bracos.viterbi(sequencia_a_ser_avaliada)[1])
+		simbolos=[]
+	else:
+		simbolos.append(code_word[0][0])
 
-	simbolos=[]
-    else:
-	simbolos.append(code_word[0][0])
-
-    print probabilidades
     print simbolos
+    print probabilidades
 
 
-    #cv.ShowImage("Video",imagem)
-    #cv.ShowImage('Regiao de Interesse',regiao_de_interesse)
-    #cv.ShowImage("Mascara", mascara)
+
+    cv.ShowImage("Video",imagem)
+    cv.ShowImage('Regiao de Interesse',regiao_de_interesse)
+    cv.ShowImage("Mascara", mascara)
     #cv.ShowImage("Binario", cinza)
 
     cv.WaitKey( waitPerFrameInMillisec  )
