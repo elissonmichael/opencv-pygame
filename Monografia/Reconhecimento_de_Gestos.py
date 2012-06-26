@@ -77,7 +77,7 @@ for f in xrange( frames_total ):
 	cv.ResetImageROI(cinza)
 
 	ponto1 = (retangulo_de_interesse[0], retangulo_de_interesse[1])
-        ponto2 = (retangulo_de_interesse[0] + retangulo_de_interesse[2], retangulo_de_interesse[1] + retangulo_de_interesse[3])
+	ponto2 = (retangulo_de_interesse[0] + retangulo_de_interesse[2], retangulo_de_interesse[1] + retangulo_de_interesse[3])
 	largura = ponto2[0] - ponto1[0]
 	altura = ponto2[1] - ponto1[1]
 	cv.Rectangle(mascara, ponto1, ponto2, cv.CV_RGB(255,255,255), 1)
