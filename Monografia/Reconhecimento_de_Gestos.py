@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import cv
 from numpy import array
 from scipy.cluster.vq import vq
@@ -119,9 +120,16 @@ for f in xrange( frames_total ):
 	else:
 		simbolos.append(code_word[0][0])
 
-    print simbolos
+    #print simbolos
     print probabilidades
-
+    if (probabilidades and min(probabilidades)!= 1.0):
+	maiorProbabilidade = min(probabilidades)
+	maiorProbabilidade_Index = probabilidades.index(maiorProbabilidade)
+	if maiorProbabilidade_Index == 0: print 'Passo para Direita        / Step Right'
+	if maiorProbabilidade_Index == 1: print 'Passo para Esquerda       / Step Left'
+	if maiorProbabilidade_Index == 2: print 'Braço Direito Para Cima   / Right Arm Up'
+	if maiorProbabilidade_Index == 3: print 'Braço Esquerdo Para Cima  / Left Arm Up'
+	if maiorProbabilidade_Index == 4: print 'Ambos os Braços Para Cima / Both Arms Up'
 
 
     #cv.ShowImage("Video",imagem)

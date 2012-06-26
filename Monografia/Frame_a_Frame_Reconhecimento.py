@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import cv
 from numpy import array
 from scipy.cluster.vq import vq
@@ -41,7 +42,7 @@ class Filtros:
 
         def processa(self):
                 system("clear")
-                maiorArea = 0
+                maiorArea = None
                 listaContornos = []
                 listaVertices = []
                 quadrante = []
@@ -106,11 +107,9 @@ class Filtros:
                                 cv.ResetImageROI(regiao_de_interesse)
 
 
-                vetor_de_caracteristicas = array ([porcentagem])
-                code_word = vq(vetor_de_caracteristicas,code_book)
 		global simbolos,probabilidades
 
-                if len(simbolos)==30:
+                if len(simbolos)==15:
                       probabilidades = []
                       sequencia_a_ser_avaliada = EmissionSequence(sigma,simbolos)
                       probabilidades.append(HMM_passo_para_direita.viterbi(sequencia_a_ser_avaliada)[1])
@@ -120,10 +119,21 @@ class Filtros:
                       probabilidades.append(HMM_levantar_ambos_os_bracos.viterbi(sequencia_a_ser_avaliada)[1])
                       simbolos = []
                 else:
-                      simbolos.append(code_word[0][0])
+                      if not all([ v == 0.0 for v in porcentagem ]) :
+	                      vetor_de_caracteristicas = array ([porcentagem])
+	                      code_word = vq(vetor_de_caracteristicas,code_book)
+	                      simbolos.append(code_word[0][0])
 
                 print simbolos
                 print probabilidades
+                if (probabilidades and min(probabilidades)!= 1.0):
+			maiorProbabilidade = min(probabilidades)
+			maiorProbabilidade_Index = probabilidades.index(maiorProbabilidade)
+			if maiorProbabilidade_Index == 0: print 'Passo para Direita        / Step Right'
+			if maiorProbabilidade_Index == 1: print 'Passo para Esquerda       / Step Left'
+			if maiorProbabilidade_Index == 2: print 'Braço Direito Para Cima   / Right Arm Up'
+			if maiorProbabilidade_Index == 3: print 'Braço Esquerdo Para Cima  / Left Arm Up'
+			if maiorProbabilidade_Index == 4: print 'Ambos os Braços Para Cima / Both Arms Up'
 
                 self.mostrar()
 
