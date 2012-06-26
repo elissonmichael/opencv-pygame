@@ -20,14 +20,14 @@ frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 fps = cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FPS )
 waitPerFrameInMillisec = int( 1/fps * 1000/1 )
 
-cv.NamedWindow("Video", 0)
+#cv.NamedWindow("Video", 0)
 cv.NamedWindow("Mascara", 1)
 #cv.NamedWindow("Binario", 1)
-cv.MoveWindow("Video",1000,510)
+#cv.MoveWindow("Video",1000,510)
 cv.MoveWindow("Mascara",0,0)
 #cv.MoveWindow("Binario",650,0)
-cv.NamedWindow("Regiao de Interesse", 1)
-cv.MoveWindow("Regiao de Interesse",650,0)
+#cv.NamedWindow("Regiao de Interesse", 1)
+#cv.MoveWindow("Regiao de Interesse",650,0)
 
 mascara = cv.CreateImage((resolucao_largura,resolucao_altura), 8, 3)
 cinza = cv.CreateImage((resolucao_largura,resolucao_altura), 8, 1)
@@ -124,8 +124,8 @@ for f in xrange( frames_total ):
 
 
 
-    cv.ShowImage("Video",imagem)
-    cv.ShowImage('Regiao de Interesse',regiao_de_interesse)
+    #cv.ShowImage("Video",imagem)
+    #cv.ShowImage('Regiao de Interesse',regiao_de_interesse)
     cv.ShowImage("Mascara", mascara)
     #cv.ShowImage("Binario", cinza)
 
