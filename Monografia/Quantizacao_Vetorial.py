@@ -12,7 +12,7 @@ filtro_de_erosao = 2
 resolucao_largura = 640
 resolucao_altura = 480
 
-video = cv.CaptureFromFile('videos/2_bracos_4.avi')
+video = cv.CaptureFromFile('videos/2_bracos_5.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 
 #cv.NamedWindow("Video", 0)

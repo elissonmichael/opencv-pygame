@@ -15,7 +15,7 @@ filtro_de_erosao = 2
 resolucao_largura = 640
 resolucao_altura = 480
 
-video = cv.CaptureFromFile('videos/testar_todos.avi')
+video = cv.CaptureFromFile('videos/2_bracos_5.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 
 #cv.NamedWindow("Video", 0)
@@ -109,7 +109,7 @@ class Filtros:
 
 		global simbolos,probabilidades
 
-                if len(simbolos)==15:
+                if len(simbolos)==30:
                       probabilidades = []
                       sequencia_a_ser_avaliada = EmissionSequence(sigma,simbolos)
                       probabilidades.append(HMM_passo_para_direita.viterbi(sequencia_a_ser_avaliada)[1])

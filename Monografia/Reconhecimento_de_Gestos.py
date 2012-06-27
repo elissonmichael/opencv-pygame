@@ -16,17 +16,18 @@ filtro_de_erosao = 2
 resolucao_largura = 640
 resolucao_altura = 480
 
-video = cv.CaptureFromFile('videos/passo_direita_1.avi')
+fonte_do_texto = cv.InitFont(cv.CV_FONT_HERSHEY_SIMPLEX, 0.7, 0.7, 0, 2, 8)
+video = cv.CaptureFromFile('videos/2_bracos_5.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 fps = cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FPS )
 waitPerFrameInMillisec = int( 1/fps * 1000/1 )
 
-#cv.NamedWindow("Video", 0)
-cv.NamedWindow("Mascara", 1)
-#cv.NamedWindow("Binario", 1)
-#cv.MoveWindow("Video",1000,510)
-cv.MoveWindow("Mascara",0,0)
-#cv.MoveWindow("Binario",650,0)
+cv.NamedWindow("Video", 1)
+cv.NamedWindow("Mascara", 0)
+cv.NamedWindow("Binario", 0)
+cv.MoveWindow("Mascara",1000,0)
+cv.MoveWindow("Video",0,0)
+cv.MoveWindow("Binario",650,0)
 #cv.NamedWindow("Regiao de Interesse", 1)
 #cv.MoveWindow("Regiao de Interesse",650,0)
 
@@ -39,11 +40,11 @@ simbolos = []
 probabilidades = []
 
 for f in xrange( frames_total ):
-    system('clear')
+    #system('clear')
 
     imagem = cv.QueryFrame(video)
     cv.Smooth(imagem,imagem,cv.CV_GAUSSIAN,filtro_de_gauss)
-    maiorArea = 0
+    maiorArea = None
     listaContornos = []
     listaVertices = []
     quadrante = []
@@ -121,22 +122,22 @@ for f in xrange( frames_total ):
 		code_word = vq(vetor_de_caracteristicas,code_book)
 		simbolos.append(code_word[0][0])
 
-    print simbolos
-    print probabilidades
+    #print simbolos
+    #print probabilidades
     if (probabilidades and min(probabilidades)!= 1.0):
 	maiorProbabilidade = min(probabilidades)
 	maiorProbabilidade_Index = probabilidades.index(maiorProbabilidade)
-	if maiorProbabilidade_Index == 0: print 'Passo para Direita        / Step Right'
-	if maiorProbabilidade_Index == 1: print 'Passo para Esquerda       / Step Left'
-	if maiorProbabilidade_Index == 2: print 'Braço Direito Para Cima   / Right Arm Up'
-	if maiorProbabilidade_Index == 3: print 'Braço Esquerdo Para Cima  / Left Arm Up'
-	if maiorProbabilidade_Index == 4: print 'Ambos os Braços Para Cima / Both Arms Up'
+	if maiorProbabilidade_Index == 0: nomeGesto = 'Passo para Direita/Step Right'
+	if maiorProbabilidade_Index == 1: nomeGesto = 'Passo para Esquerda/Step Left'
+	if maiorProbabilidade_Index == 2: nomeGesto = 'Braco Direito Para Cima/Right Arm Up'
+	if maiorProbabilidade_Index == 3: nomeGesto = 'Braco Esquerdo Para Cima/Left Arm Up'
+	if maiorProbabilidade_Index == 4: nomeGesto = 'Ambos os Bracos Para Cima/Both Arms Up'
+	cv.PutText(imagem, nomeGesto, (80,435) ,fonte_do_texto , cv.CV_RGB(255,255,255))
 
-
-    #cv.ShowImage("Video",imagem)
-    #cv.ShowImage('Regiao de Interesse',regiao_de_interesse)
+    cv.ShowImage("Video",imagem)
     cv.ShowImage("Mascara", mascara)
-    #cv.ShowImage("Binario", cinza)
+    cv.ShowImage("Binario", cinza)
+    #cv.ShowImage('Regiao de Interesse',regiao_de_interesse)
 
     cv.WaitKey( waitPerFrameInMillisec  )
 
