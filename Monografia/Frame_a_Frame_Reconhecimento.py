@@ -127,7 +127,10 @@ class Filtros:
                 print simbolos
                 print probabilidades
                 if (probabilidades and min(probabilidades)!= 1.0):
-			maiorProbabilidade = min(probabilidades)
+			for i in range(0,len(probabilidades)):
+				if i == 1.0:
+					probabilidades.remove(i)
+			maiorProbabilidade = max(probabilidades)
 			maiorProbabilidade_Index = probabilidades.index(maiorProbabilidade)
 			if maiorProbabilidade_Index == 0: print 'Passo para Direita        / Step Right'
 			if maiorProbabilidade_Index == 1: print 'Passo para Esquerda       / Step Left'
