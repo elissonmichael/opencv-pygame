@@ -16,7 +16,7 @@ filtro_de_erosao = 2
 resolucao_largura = 640
 resolucao_altura = 480
 
-video = cv.CaptureFromFile('videos/testar_todos.avi')
+video = cv.CaptureFromFile('videos/passo_direita_1.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 fps = cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FPS )
 waitPerFrameInMillisec = int( 1/fps * 1000/1 )
@@ -62,7 +62,7 @@ for f in xrange( frames_total ):
     contorno = cv.FindContours(cinza, armazenamento, cv.CV_RETR_LIST, cv.CV_LINK_RUNS)
 
     while contorno:
-        vertices_do_retangulo = cv.BoundingRect(list(contorno))
+	vertices_do_retangulo = cv.BoundingRect(list(contorno))
 	listaVertices.append(vertices_do_retangulo)
 
 	listaContornos.append(cv.ContourArea(contorno))
@@ -105,22 +105,23 @@ for f in xrange( frames_total ):
 		cv.Copy(regiao_de_interesse,quadrante[l+j])
 		cv.ResetImageROI(regiao_de_interesse)
 
-    if porcentagem:
-	vetor_de_caracteristicas = array ([porcentagem])
-	code_word = vq(vetor_de_caracteristicas,code_book)
-	if len(simbolos)==15:
-		probabilidades = []
-		sequencia_a_ser_avaliada = EmissionSequence(sigma,simbolos)
-		probabilidades.append(HMM_passo_para_direita.viterbi(sequencia_a_ser_avaliada)[1])
-		probabilidades.append(HMM_passo_para_esquerda.viterbi(sequencia_a_ser_avaliada)[1])
-		probabilidades.append(HMM_levantar_braco_direito.viterbi(sequencia_a_ser_avaliada)[1])
-		probabilidades.append(HMM_levantar_braco_esquerdo.viterbi(sequencia_a_ser_avaliada)[1])
-		probabilidades.append(HMM_levantar_ambos_os_bracos.viterbi(sequencia_a_ser_avaliada)[1])
-		simbolos=[]
-	else:
+
+    if len(simbolos)==30:
+	probabilidades = []
+	sequencia_a_ser_avaliada = EmissionSequence(sigma,simbolos)
+	probabilidades.append(HMM_passo_para_direita.viterbi(sequencia_a_ser_avaliada)[1])
+	probabilidades.append(HMM_passo_para_esquerda.viterbi(sequencia_a_ser_avaliada)[1])
+	probabilidades.append(HMM_levantar_braco_direito.viterbi(sequencia_a_ser_avaliada)[1])
+	probabilidades.append(HMM_levantar_braco_esquerdo.viterbi(sequencia_a_ser_avaliada)[1])
+	probabilidades.append(HMM_levantar_ambos_os_bracos.viterbi(sequencia_a_ser_avaliada)[1])
+	simbolos=[]
+    else:
+	if not all([ v == 0.0 for v in porcentagem ]) :
+		vetor_de_caracteristicas = array ([porcentagem])
+		code_word = vq(vetor_de_caracteristicas,code_book)
 		simbolos.append(code_word[0][0])
 
-    #print simbolos
+    print simbolos
     print probabilidades
     if (probabilidades and min(probabilidades)!= 1.0):
 	maiorProbabilidade = min(probabilidades)
