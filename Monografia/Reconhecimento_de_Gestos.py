@@ -17,17 +17,19 @@ resolucao_largura = 640
 resolucao_altura = 480
 
 fonte_do_texto = cv.InitFont(cv.CV_FONT_HERSHEY_SIMPLEX, 0.7, 0.7, 0, 2, 8)
-video = cv.CaptureFromFile('videos/2_bracos_5.avi')
+nomeGesto = ''
+video = cv.CaptureFromFile('videos/testar_todos.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 fps = cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FPS )
 waitPerFrameInMillisec = int( 1/fps * 1000/1 )
 
 cv.NamedWindow("Video", 1)
-cv.NamedWindow("Mascara", 0)
+cv.NamedWindow("Mascara", 1)
 cv.NamedWindow("Binario", 0)
 cv.MoveWindow("Mascara",1000,0)
 cv.MoveWindow("Video",0,0)
-cv.MoveWindow("Binario",650,0)
+cv.MoveWindow("Binario",600,480)
+#cv.MoveWindow("Binario",650,0)
 #cv.NamedWindow("Regiao de Interesse", 1)
 #cv.MoveWindow("Regiao de Interesse",650,0)
 
@@ -110,11 +112,37 @@ for f in xrange( frames_total ):
     if len(simbolos)==30:
 	probabilidades = []
 	sequencia_a_ser_avaliada = EmissionSequence(sigma,simbolos)
-	probabilidades.append(HMM_passo_para_direita.viterbi(sequencia_a_ser_avaliada)[1])
-	probabilidades.append(HMM_passo_para_esquerda.viterbi(sequencia_a_ser_avaliada)[1])
-	probabilidades.append(HMM_levantar_braco_direito.viterbi(sequencia_a_ser_avaliada)[1])
-	probabilidades.append(HMM_levantar_braco_esquerdo.viterbi(sequencia_a_ser_avaliada)[1])
-	probabilidades.append(HMM_levantar_ambos_os_bracos.viterbi(sequencia_a_ser_avaliada)[1])
+
+	probabilidade_de_passo_direita = HMM_passo_para_direita.viterbi(sequencia_a_ser_avaliada)
+	if probabilidade_de_passo_direita[0][0] != -1:
+		probabilidades.append(probabilidade_de_passo_direita[1])
+	else:
+		probabilidades.append(None)
+
+	probabilidade_de_passo_esquerda = HMM_passo_para_esquerda.viterbi(sequencia_a_ser_avaliada)
+	if probabilidade_de_passo_esquerda[0][0] != -1:
+		probabilidades.append(probabilidade_de_passo_esquerda[1])
+	else:
+		probabilidades.append(None)
+
+	probabilidade_de_braco_direito = HMM_levantar_braco_direito.viterbi(sequencia_a_ser_avaliada)
+	if probabilidade_de_braco_direito[0][0] != -1:
+		probabilidades.append(probabilidade_de_braco_direito[1])
+	else:
+		probabilidades.append(None)
+
+	probabilidade_de_braco_esquerdo = HMM_levantar_braco_esquerdo.viterbi(sequencia_a_ser_avaliada)
+	if probabilidade_de_braco_esquerdo[0][0] != -1:
+		probabilidades.append(probabilidade_de_braco_esquerdo[1])
+	else:
+		probabilidades.append(None)
+
+	probabilidade_de_ambos_bracos = HMM_levantar_ambos_os_bracos.viterbi(sequencia_a_ser_avaliada)
+	if probabilidade_de_ambos_bracos[0][0] != -1:
+		probabilidades.append(probabilidade_de_ambos_bracos[1])
+	else:
+		probabilidades.append(None)
+
 	simbolos=[]
     else:
 	if not all([ v == 0.0 for v in porcentagem ]) :
@@ -124,10 +152,11 @@ for f in xrange( frames_total ):
 
     #print simbolos
     #print probabilidades
-    if (probabilidades and min(probabilidades)!= 1.0):
-	maiorProbabilidade = min(probabilidades)
+    if probabilidades:
+	maiorProbabilidade = max(probabilidades)
 	maiorProbabilidade_Index = probabilidades.index(maiorProbabilidade)
-	if maiorProbabilidade_Index == 0: nomeGesto = 'Passo para Direita/Step Right'
+	if(maiorProbabilidade_Index == 0 and maiorProbabilidade == None): nomeGesto = ''
+	if(maiorProbabilidade_Index == 0 and maiorProbabilidade != None): nomeGesto = 'Passo para Direita/Step Right'
 	if maiorProbabilidade_Index == 1: nomeGesto = 'Passo para Esquerda/Step Left'
 	if maiorProbabilidade_Index == 2: nomeGesto = 'Braco Direito Para Cima/Right Arm Up'
 	if maiorProbabilidade_Index == 3: nomeGesto = 'Braco Esquerdo Para Cima/Left Arm Up'
