@@ -18,7 +18,7 @@ resolucao_altura = 480
 
 fonte_do_texto = cv.InitFont(cv.CV_FONT_HERSHEY_SIMPLEX, 0.7, 0.7, 0, 2, 8)
 nomeGesto = ''
-video = cv.CaptureFromFile('videos/testar_todos.avi')
+video = cv.CaptureFromFile('videos/2_bracos_5.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 fps = cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FPS )
 waitPerFrameInMillisec = int( 1/fps * 1000/1 )

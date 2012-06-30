@@ -1,0 +1,51 @@
+import cPickle as pickle 
+import Rasterizer, os
+
+class PipeReader:
+    """A file-like read-only interface to a file descriptor."""
+    def __init__(self, fd):
+        self.fd = fd
+
+    def read(self, bytes):
+        return os.read(self.fd, bytes)
+
+    def readline(self):
+        line = ""
+        while line[-1:] != "\n":
+            line = line + os.read(self.fd, 1)
+        return line
+
+def pipeload(fd):
+    """Unpickle an object from the stream given by a numeric descriptor."""
+    return pickle.load(PipeReader(fd))
+
+cont = GameLogic.getCurrentController()
+own = cont.owner
+sensX = own["sens_speedX"]
+sensY = own["sens_speedY"]
+sens_mov = own["sens_movimento"]
+current = own.worldPosition #Retorna vetor [x,y,z]
+
+#Pega atuadores
+lookLeftRight = cont.actuators["LookLeftRight"]
+lookUpDown = cont.actuators["LookUpDown"]
+
+def move():
+	fd = os.open("/tmp/pipe", os.O_RDONLY)
+	ret = pipeload(fd)
+	os.close(fd)
+	return ret
+
+move = move()
+		
+speedx = (move[0]*sens_mov-current[0])*sensX
+	
+lookLeftRight.dLoc = [speedx, 0.0, 0.0]
+	
+speedy = (move[2]-current[1])*sensY
+	
+lookUpDown.dLoc = [0.0, speedy, 0.0]
+	
+# Usa os atuadores
+cont.activate(lookLeftRight)
+cont.activate(lookUpDown)
