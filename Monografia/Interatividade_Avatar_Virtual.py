@@ -18,9 +18,7 @@ resolucao_largura = 640
 resolucao_altura = 480
 
 fonte_do_texto = cv.InitFont(cv.CV_FONT_HERSHEY_SIMPLEX, 0.7, 0.7, 0, 2, 8)
-sequencia_gestos = []
-nomeGesto = ''
-video = cv.CaptureFromFile('videos/2_bracos_5.avi')
+video = cv.CaptureFromFile('videos/testar_todos.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 fps = cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FPS )
 waitPerFrameInMillisec = int( 1/fps * 1000/1 )
@@ -39,6 +37,7 @@ cinza = cv.CreateImage((resolucao_largura,resolucao_altura), 8, 1)
 fundo = cv.LoadImage('videos/fundo.jpg')
 cv.Smooth(fundo,fundo,cv.CV_GAUSSIAN,filtro_de_gauss)
 
+nomeGesto = ''
 simbolos = []
 probabilidades = []
 
@@ -176,19 +175,17 @@ for f in xrange( frames_total ):
 		sequencia_de_animacoes.append(levantar_ambos_os_bracos)
 
 	probabilidades = []
-	sequencia_gestos.append(nomeGesto)
-	cv.PutText(imagem, nomeGesto, (80,435) ,fonte_do_texto , cv.CV_RGB(255,255,255))
+
+    cv.PutText(imagem, nomeGesto, (80,435) ,fonte_do_texto , cv.CV_RGB(255,255,255))
 
     cv.ShowImage("Video",imagem)
     cv.ShowImage("Mascara", mascara)
     cv.ShowImage("Binario", cinza)
     #cv.ShowImage('Regiao de Interesse',regiao_de_interesse)
 
-    print sequencia_gestos
-
     if sequencia_de_animacoes and estado_avatar==parado:
         estado_avatar = sequencia_de_animacoes.pop(0)
-        sequencia_gestos.pop(0)
+        frame_da_animacao=0
 
     tick_time = clock.tick(fps)
     pygame.display.set_caption("Ambiente Virtual. FPS: %.2f" % (clock.get_fps()))
@@ -196,6 +193,7 @@ for f in xrange( frames_total ):
     if (frame_da_animacao==28):
         frame_da_animacao=0
         estado_avatar = parado
+
     else:
         frame_da_animacao=frame_da_animacao+1
 
