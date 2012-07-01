@@ -19,7 +19,8 @@ resolucao_altura = 480
 
 fonte_do_texto = cv.InitFont(cv.CV_FONT_HERSHEY_SIMPLEX, 0.7, 0.7, 0, 2, 8)
 nomeGesto = ''
-video = cv.CaptureFromFile('videos/testar_todos.avi')
+sequencia_de_animacoes = []
+video = cv.CaptureFromFile('videos/2_bracos_5.avi')
 frames_total = int( cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FRAME_COUNT ) )
 fps = cv.GetCaptureProperty( video, cv.CV_CAP_PROP_FPS )
 waitPerFrameInMillisec = int( 1/fps * 1000/1 )
@@ -161,21 +162,18 @@ for f in xrange( frames_total ):
 		nomeGesto = ''
 	if(maiorProbabilidade_Index == 0 and maiorProbabilidade != None):
 		nomeGesto = 'Passo para Direita/Step Right'
-		estado_avatar = caminhar_direita[frame_da_animacao]
 	if maiorProbabilidade_Index == 1:
 		nomeGesto = 'Passo para Esquerda/Step Left'
-		estado_avatar = caminhar_esquerda[frame_da_animacao]
 	if maiorProbabilidade_Index == 2:
 		nomeGesto = 'Braco Direito Para Cima/Right Arm Up'
-		estado_avatar = levantar_braco_direito[frame_da_animacao]
 	if maiorProbabilidade_Index == 3:
 		nomeGesto = 'Braco Esquerdo Para Cima/Left Arm Up'
-		estado_avatar = levantar_braco_esquerdo[frame_da_animacao]
 	if maiorProbabilidade_Index == 4:
 		nomeGesto = 'Ambos os Bracos Para Cima/Both Arms Up'
-		estado_avatar = levantar_ambos_os_bracos[frame_da_animacao]
+	probabilidades = []
 
 	cv.PutText(imagem, nomeGesto, (80,435) ,fonte_do_texto , cv.CV_RGB(255,255,255))
+	if nomeGesto != '' : sequencia_de_animacoes.append(nomeGesto)
 
     cv.ShowImage("Video",imagem)
     cv.ShowImage("Mascara", mascara)
@@ -186,15 +184,30 @@ for f in xrange( frames_total ):
     tick_time = clock.tick(fps)
     pygame.display.set_caption("Ambiente Virtual. FPS: %.2f" % (clock.get_fps()))
 
-    if (frame_da_animacao==28):
+    print sequencia_de_animacoes
+
+    if sequencia_de_animacoes and estado_avatar == parado :
+        nome_animacao = sequencia_de_animacoes.pop(0)
+        if nome_animacao == 'Passo para Direita/Step Right':
+            estado_avatar = caminhar_direita[frame_da_animacao]
+        if nome_animacao == 'Passo para Esquerda/Step Left':
+            estado_avatar = caminhar_esquerda[frame_da_animacao]
+        if nome_animacao == 'Braco Direito Para Cima/Right Arm Up':
+            estado_avatar = levantar_braco_direito[frame_da_animacao]
+        if nome_animacao == 'Braco Esquerdo Para Cima/Left Arm Up':
+            estado_avatar = levantar_braco_esquerdo[frame_da_animacao]
+        if nome_animacao == 'Ambos os Bracos Para Cima/Both Arms Up':
+            estado_avatar = levantar_ambos_os_bracos[frame_da_animacao]
         frame_da_animacao=0
+
+    if (frame_da_animacao==28):
+        estado_avatar = parado
+        frame_da_animacao = 0
     else:
         frame_da_animacao=frame_da_animacao+1
 
     screen.blit(fundo_ambiente_virtual,(0,0))
-
     screen.blit(estado_avatar,(posicao_X_do_avatar,posicao_Y_do_avatar))
-
     pygame.display.update()
 
     cv.WaitKey( waitPerFrameInMillisec  )
