@@ -190,6 +190,11 @@ for f in xrange( frames_total ):
     tick_time = clock.tick(fps)
     pygame.display.set_caption("Ambiente Virtual. FPS: %.2f" % (clock.get_fps()))
 
+    if estado_avatar==caminhar_direita:
+        posicao_X_do_avatar = posicao_X_do_avatar + 5
+    if estado_avatar==caminhar_esquerda:
+        posicao_X_do_avatar = posicao_X_do_avatar - 5
+
     if (frame_da_animacao==28):
         frame_da_animacao=0
         estado_avatar = parado
